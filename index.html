@@ -431,7 +431,8 @@
                 score++; btn.classList.add("selected");
                 heart.classList.add("show");
                 setTimeout(() => heart.classList.remove("show"), 800);
-                msg.textContent = "Correct! I love you 😘";
+                const randomMessage = cuteMessages[Math.floor(Math.random() * cuteMessages.length)];
+                msg.textContent = randomMessage;
                 msg.style.color = "green";
             } else {
                 btn.classList.add("wrong");
@@ -441,7 +442,8 @@
                     angry.classList.remove("show");
                     document.body.classList.remove("shake-screen");
                 }, 1000);
-                msg.textContent = "Wrong 😤 but still mine!";
+                const randomAngry = angryMessages[Math.floor(Math.random() * angryMessages.length)];
+                msg.textContent = randomAngry;
                 msg.style.color = "red";
             }
             scoreEl.textContent = `Love Quiz 💖 Score: ${score}/${quiz.length}`;
