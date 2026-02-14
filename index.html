@@ -299,11 +299,13 @@
             "assets/pic2.jpeg",
             "assets/pic3.jpeg",
             "assets/pic4.jpeg",
-            "assets/pic5.jpeg"
+            "assets/pic5.jpeg",
+            "assets/pic1a.jpeg",
+            "assets/pic2a.jpeg"
         ];
 
         const videoPath = "assets/myvideo.mp4";
-        let girlfriendName = "Sofi 💃" || "";
+        let girlfriendName = "Dr.A.Shanmathi 💃" || "";
 
         const cuteMessages = [
             "Awww 🥰 You know me so well!",
@@ -589,16 +591,43 @@
             <div id="videoContainer"></div>
         </div>
     `;
+            animateName(typeLoveLetter);
 
-            animateName();
-            typeLoveLetter();
+            //animateName();
+            //typeLoveLetter();
         }
 
         /* ---------------- NAME ANIMATION ---------------- */
 
-        function animateName() {
+        function animateName(callback) {
             const el = document.getElementById("nameAnimation");
-            let text = "💖My Love 💖 , " + girlfriendName + "👑";
+            el.textContent = "";   // reset
+            let text = "💖To My Love 💖 , " + girlfriendName + "👑";
+            let i = 0;
+
+            const interval = setInterval(() => {
+                el.textContent += text[i];
+                i++;
+
+                if (i >= text.length) {
+                    clearInterval(interval);
+
+                    // small romantic pause before letter starts
+                    setTimeout(() => {
+                        if (callback) callback();
+                    }, 500);
+                }
+
+            }, 80);
+        }
+
+
+        /* ---------------- TYPING EFFECT ---------------- */
+
+        function typeLoveLetter() {
+            const text = "Hey Pondatti!!! From the moment you walked into my life, everything changed.Every laugh, every smile, every little moment with you is my favorite memory. 💕 I choose you. Always. 💖 You are my happiness, my peace, my forever. ❤️     I LOVE YOU SOFI 💖";
+            const el = document.getElementById("typedText");
+            el.textContent = "";
             let i = 0;
 
             const interval = setInterval(() => {
@@ -606,20 +635,6 @@
                 i++;
                 if (i >= text.length) clearInterval(interval);
             }, 80);
-        }
-
-        /* ---------------- TYPING EFFECT ---------------- */
-
-        function typeLoveLetter() {
-            const text = "Hey Pondatti!!! From the moment you walked into my life, everything changed.Every laugh, every smile, every little moment with you is my favorite memory. 💕 I choose you. Always. 💖 You are my happiness, my peace, my forever. ❤️     I LOVE YOU SOFI 💖";
-            const el = document.getElementById("typedText");
-            let i = 0;
-
-            const interval = setInterval(() => {
-                el.textContent += text[i];
-                i++;
-                if (i >= text.length) clearInterval(interval);
-            }, 40);
         }
 
         /* ---------------- SPARKLE HEART ---------------- */
