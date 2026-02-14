@@ -303,6 +303,7 @@
         ];
 
         const videoPath = "assets/myvideo.mp4";
+        let girlfriendName = "Sofi 💃" || "";
 
         const cuteMessages = [
             "Awww 🥰 You know me so well!",
@@ -315,6 +316,19 @@
             "Soulmate detected 💕",
             "My heart just did a happy dance 💃❤️",
             "Certified Love Expert 🏆💖"
+        ];
+
+        const noMessages = [
+            "Nice try 😌 but my heart already booked you 💖",
+            "No is not available right now ❌ Try Yes 😘",
+            "Oops 😏 wrong button… destiny says YES 💘",
+            "Error 404: No button not working 🤭",
+            "Haha 😝 Too late, We already married ❤️",
+            "Invalid choice 😌 Try again, my love 💞",
+            "Haha 😜 funny! Now click YES 💕",
+            "No button is just for decoration 😏✨",
+            "Nice joke 😘 I’ll wait for YES 💍",
+            "Cute try 😘 But you’re stuck with me ❤️"
         ];
 
         const angryMessages = [
@@ -342,7 +356,7 @@
                 question: "What is my favorite thing about you? 💖",
                 options: ["Your smile 😊", "Your anger 😡🔥", "Your eyes 👀✨", "Everything about you 🥰"],
                 answer: 3
-            },
+            } /*,
             {
                 question: "Who fell first? 😌💘",
                 options: ["You 😝", "Me 🙈", "Both at same time 🤭", "Still loading... ⏳"],
@@ -397,7 +411,7 @@
                 question: "Will you be my forever Valentine? 💘",
                 options: ["Yes 😊", "Obviously yes 😌", "Forever yes ♾️💞", "YESSSSSS ❤️🔥"],
                 answer: 3
-            }
+            } */
         ];
 
 
@@ -449,7 +463,7 @@
             scoreEl.textContent = `Love Quiz 💖 Score: ${score}/${quiz.length}`;
             setTimeout(() => {
                 current++;
-                current < quiz.length ? loadQuestion() : showValentine();
+                current < quiz.length ? loadQuestion() : showFinalScore();
             }, 2500);
         }
 
@@ -460,14 +474,15 @@
 <button class="yes-btn" onclick="yesClicked()">Yes ❤️</button>
 <button class="no-btn" onclick="noClicked()">No</button>
 </div>
-<div class="popup" id="popup">
-❌ Invalid choice. You're already mine 😌
-</div>`;
+<div class="popup" id="popup"></div>
+`;
         }
+
+
 
         function yesClicked() {
             card.innerHTML = `
-<h2>Yayyyy!! 💖</h2>
+<h2>Yayyyy!! I Love you Shan 💖</h2>
 <div class="big-heart">❤️</div>
 <p>Thank you Darling 💃❤️💖</p>
 <p>You are officially my Valentine!</p>
@@ -477,24 +492,67 @@
 </div>`;
             startLoading(); startHearts();
         }
+        function noClicked() {
+            const popup = document.getElementById("popup");
+
+            if (!popup) return;
+
+            const messages = [
+                "Nice try 😌 but my heart already booked you 💖",
+                "No is not available right now ❌ Try Yes 😘",
+                "Oops 😏 wrong button… destiny says YES 💘",
+                "Error 404 ❌ No not found. Only LOVE ❤️",
+                "You can’t escape me that easily 😤💖",
+                "Haha 😜 funny! Now click YES 💕",
+                "System override 💻💖 You belong with me",
+                "No button is just for decoration 😏✨",
+                "Nice joke 😘 I’ll wait for YES 💍",
+                "Error 404: No button not working 🤭",
+                "Haha 😝 Too late, We already married ❤️",
+                "Invalid choice 😌 Try again, my love 💞",
+                "Cute try 😘 But you’re stuck with me ❤️"
+            ];
+
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            popup.textContent = "❌ " + messages[randomIndex];
+
+            popup.classList.add("show");
+
+            setTimeout(() => {
+                popup.classList.remove("show");
+            }, 3000);
+        }
+
+
 
         function startLoading() {
             let p = 0;
             const bar = document.getElementById("bar");
             const i = setInterval(() => {
-                p += 2; bar.style.width = p + "%";
-                if (p >= 100) { clearInterval(i); showBalloons(); }
-            }, 40);
+                p += 1;   // smaller increment
+                bar.style.width = p + "%";
+
+                if (p >= 100) {
+                    clearInterval(i);
+                    showBalloons();
+                }
+            }, 80);   // smoother timing
         }
+
+
+        /* ---------------- BALLOONS ---------------- */
 
         function showBalloons() {
             balloonsPopped = 0;
             card.innerHTML = `
-<h2>🎈 Pop the Balloons 🎈</h2>
-<div id="balloons"></div>
-<div id="imageGallery"></div>
-<div id="afterBalloons"></div>`;
+        <h2>🎈 Pop the Balloons 🎈</h2>
+        <div id="balloons"></div>
+        <div id="imageGallery"></div>
+        <div id="afterBalloons"></div>
+    `;
+
             const b = document.getElementById("balloons");
+
             images.forEach(img => {
                 const span = document.createElement("span");
                 span.className = "balloon";
@@ -503,62 +561,87 @@
                 b.appendChild(span);
             });
         }
-
         function popBalloon(el, img) {
-            el.textContent = "💥"; el.onclick = null;
+            el.textContent = "💥";
+            el.onclick = null;
+
             const image = document.createElement("img");
             image.src = img;
             image.className = "memoryImage";
             document.getElementById("imageGallery").appendChild(image);
+
             balloonsPopped++;
+
             if (balloonsPopped === images.length) {
-                setTimeout(showLoveLetterButton, 1000);
+                setTimeout(showLoveLetter, 1000);
             }
         }
 
-        function showLoveLetterButton() {
-            document.getElementById("afterBalloons").innerHTML = `
-        <div style="margin-top:30px;">
-            <h3>💌 I have something special for you...</h3>
-            <button onclick="openLoveLetter()" class="loveBtn">
-                Open My Love Letter 💕
-            </button>
+        /* ---------------- LOVE LETTER ---------------- */
+
+        function showLoveLetter() {
+            card.innerHTML = `
+        <div class="loveLetter">
+            <h2 id="nameAnimation"></h2>
+            <p id="typedText"></p>
+            <div class="big-heart" onclick="sparkleHeart();playVideo()">❤️</div>
+            <p>Pop the heart for your surprise 🎥</p>
+            <div id="videoContainer"></div>
         </div>
     `;
+
+            animateName();
+            typeLoveLetter();
         }
 
-        function openLoveLetter() {
-            document.getElementById("afterBalloons").innerHTML = `
-<div class="loveLetter">
-<h3>My Love 💖</h3>
-<p>
-    From the moment you walked into my life, everything changed.
-    Every laugh, every smile, every little moment with you
-    is my favorite memory. 💕
-</p>
-<p>
-    You are my happiness, my peace, my forever. ❤️
-</p>
-<p>
-I LOVE YOU SOFI 💖
-</p>
-<div class="big-heart" onclick="playVideo()">❤️</div>
-<p>Pop the heart for your surprise 🎥</p>
-<div id="videoContainer"></div>
-</div>`;
+        /* ---------------- NAME ANIMATION ---------------- */
+
+        function animateName() {
+            const el = document.getElementById("nameAnimation");
+            let text = "💖My Love 💖 , " + girlfriendName + "👑";
+            let i = 0;
+
+            const interval = setInterval(() => {
+                el.textContent += text[i];
+                i++;
+                if (i >= text.length) clearInterval(interval);
+            }, 80);
         }
 
-        function playVideo() {
-            document.getElementById("videoContainer").innerHTML = `
-<video width="100%" autoplay controls>
-<source src="${videoPath}" type="video/mp4">
-</video>`;
+        /* ---------------- TYPING EFFECT ---------------- */
+
+        function typeLoveLetter() {
+            const text = "Hey Pondatti!!! From the moment you walked into my life, everything changed.Every laugh, every smile, every little moment with you is my favorite memory. 💕 I choose you. Always. 💖 You are my happiness, my peace, my forever. ❤️     I LOVE YOU SOFI 💖";
+            const el = document.getElementById("typedText");
+            let i = 0;
+
+            const interval = setInterval(() => {
+                el.textContent += text[i];
+                i++;
+                if (i >= text.length) clearInterval(interval);
+            }, 40);
         }
 
-        function noClicked() {
+        /* ---------------- SPARKLE HEART ---------------- */
+
+        function sparkleHeart() {
+            for (let i = 0; i < 20; i++) {
+                const star = document.createElement("div");
+                star.textContent = "✨";
+                star.style.position = "fixed";
+                star.style.left = (window.innerWidth / 2) + "px";
+                star.style.top = (window.innerHeight / 2) + "px";
+                star.style.fontSize = "20px";
+                star.style.animation = "spark 1s ease-out forwards";
+                document.body.appendChild(star);
+                setTimeout(() => star.remove(), 1000);
+            }
+        }
+
+        /*function noClicked() {
             document.getElementById("popup").classList.add("show");
             setTimeout(() => document.getElementById("popup").classList.remove("show"), 2000);
-        }
+        }*/
 
         function startHearts() {
             setInterval(() => {
@@ -573,6 +656,52 @@ I LOVE YOU SOFI 💖
         }
 
         loadQuestion();
+
+        function showFinalScore() {
+            let percentage = (score / quiz.length) * 100;
+            let message;
+
+            if (percentage >= 80) {
+                message = "You passed the Love Test with flying colors 💖✨";
+            } else if (percentage >= 50) {
+                message = "Not bad… but I expect improvement 😌💕";
+            } else {
+                message = "Even if you fail… you still own my heart 😘❤️";
+            }
+
+            card.innerHTML = `
+        <h2>${message}</h2>
+        <h3>Final Score: ${score}/${quiz.length}</h3>
+        <p>Get ready for your surprise in...</p>
+        <h1 id="countdown">10</h1>
+    `;
+
+            startCountdown();
+        }
+
+        /* ---------------- COUNTDOWN ---------------- */
+
+        function startCountdown() {
+            let count = 10;
+            const el = document.getElementById("countdown");
+
+            const interval = setInterval(() => {
+                count--;
+                el.textContent = count;
+                if (count === 0) {
+                    clearInterval(interval);
+                    showValentine();
+                }
+            }, 1000);
+        }
+
+        function playVideo() {
+            document.getElementById("videoContainer").innerHTML = `
+        <video width="100%" autoplay controls>
+            <source src="${videoPath}" type="video/mp4">
+        </video>
+    `;
+        }
     </script>
 </body>
 
