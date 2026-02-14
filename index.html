@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Quiz 💜</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #6f79ff, #8a6cff);
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 350px
+        }
+
+        .score-bar {
+            background: #eee;
+            padding: 10px;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            font-weight: bold
+        }
+
+        .card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 18px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, .2);
+            text-align: center;
+            position: relative;
+            transition: .6s
+        }
+
+        .question {
+            font-size: 18px;
+            margin-bottom: 20px
+        }
+
+        .option {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: .3s;
+            font-size: 14px
+        }
+
+        .option.selected {
+            background: #6f79ff;
+            color: #fff;
+            border-color: #6f79ff
+        }
+
+        .option.wrong {
+            background: #ff4d4d;
+            color: #fff;
+            border-color: #ff4d4d
+        }
+
+        .message {
+            margin-top: 10px;
+            font-weight: bold;
+            height: 24px
+        }
+
+        .heart,
+        .angry {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 70px;
+            opacity: 0;
+            transition: .3s
+        }
+
+        .show {
+            transform: translate(-50%, -50%) scale(1.4);
+            opacity: 1
+        }
+
+        .shake-screen {
+            animation: screenShake .4s
+        }
+
+        @keyframes screenShake {
+            0% {
+                transform: translate(0)
+            }
+
+            25% {
+                transform: translate(-10px, 5px)
+            }
+
+            50% {
+                transform: translate(10px, -5px)
+            }
+
+            75% {
+                transform: translate(-10px, -5px)
+            }
+
+            100% {
+                transform: translate(0)
+            }
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px
+        }
+
+        .yes-btn,
+        .no-btn {
+            width: 45%;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer
+        }
+
+        .yes-btn {
+            background: #32cd32;
+            color: #fff
+        }
+
+        .no-btn {
+            background: #ff3b30;
+            color: #fff
+        }
+
+        .popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: #111;
+            color: red;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            transition: .3s
+        }
+
+        .popup.show {
+            transform: translate(-50%, -50%) scale(1)
+        }
+
+        .loading-container {
+            width: 80%;
+            height: 15px;
+            background: #ffe6f2;
+            border-radius: 20px;
+            margin: 20px auto;
+            overflow: hidden
+        }
+
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff4e9b, #ff85c1, #ff4e9b);
+            background-size: 200% 100%;
+            animation: moveGradient 4s linear infinite
+        }
+
+        @keyframes moveGradient {
+            0% {
+                background-position: 0% 0%
+            }
+
+            100% {
+                background-position: 200% 0%
+            }
+        }
+
+        #balloons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center
+        }
+
+        .balloon {
+            font-size: 100px;
+            cursor: pointer;
+            transition: .3s
+        }
+
+        .balloon:hover {
+            transform: scale(1.2)
+        }
+
+        #imageGallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px
+        }
+
+        .memoryImage {
+            width: 140px;
+            border-radius: 20px;
+            animation: fadeIn .6s
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(.8)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1)
+            }
+        }
+
+        .loveLetter {
+            background: #ffe6f2;
+            padding: 25px;
+            border-radius: 20px
+        }
+
+        .big-heart {
+            font-size: 130px;
+            animation: pulse 1s infinite;
+            cursor: pointer
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1)
+            }
+
+            50% {
+                transform: scale(1.3)
+            }
+
+            100% {
+                transform: scale(1)
+            }
+        }
+
+        .floating-heart {
+            position: fixed;
+            color: #ff1493;
+            animation: floatUp 6s linear infinite;
+            pointer-events: none
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh);
+                opacity: 1
+            }
+
+            100% {
+                transform: translateY(-10vh);
+                opacity: 0
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="score-bar" id="score">Love Quiz 💖 Score: 0</div>
+        <div class="card" id="card">
+            <div class="question" id="question"></div>
+            <div id="options"></div>
+            <div class="message" id="message"></div>
+            <div class="heart" id="heart">❤️</div>
+            <div class="angry" id="angry">😡</div>
+        </div>
+    </div>
+
+    <script>
+        const images = [
+            "assets/pic1.jpeg",
+            "assets/pic2.jpeg",
+            "assets/pic3.jpeg",
+            "assets/pic4.jpeg",
+            "assets/pic5.jpeg"
+        ];
+
+        const videoPath = "assets/myvideo.mp4";
+
+        const cuteMessages = [
+            "Awww 🥰 You know me so well!",
+            "Correct! 💖 That’s why I love you!",
+            "Yayyy ❤️ My smart baby!",
+            "See? We’re meant to be 😌✨",
+            "Perfect answer 😍 Just like you!",
+            "That’s my girl 😘",
+            "Telepathy level: 100% 🧠💞",
+            "Soulmate detected 💕",
+            "My heart just did a happy dance 💃❤️",
+            "Certified Love Expert 🏆💖"
+        ];
+
+        const angryMessages = [
+            "Excuse me?! 😤 That was wrong but I still love you.",
+            "WRONG 😡 …but you're still my favorite human 😌",
+            "How dare you?! 💢 I expected better from you 😤",
+            "That hurt my little heart 💔 but okayyy…",
+            "Hmmmm suspicious answer 🤨 explain yourself!",
+            "Wrong answer detected 🚨 100 kiss as a punishment 😤",
+            "You forgot this?! I need compensation in Kisssss 😡",
+            "Incorrect! Go sit in the cute corner 😤💖",
+            "That’s wrong… I need compensation in hugs 😌",
+            "My disappointment is small… but dramatic 😤✨"
+        ];
+
+        const loveNotes = [
+            "From the first day I saw you, something felt different 💖",
+            "Your smile is my favorite notification 😌✨",
+            "Every moment with you feels like a dream I never want to wake up from 💕",
+            "You are my peace, my chaos, my everything ❤️",
+            "No matter what happens, I choose you. Always. 💍"
+        ];
+
+        const quiz = [
+            {
+                question: "What is my favorite thing about you? 💖",
+                options: ["Your smile", "Your anger 😡", "Your eyes", "Everything about you"],
+                answer: 3
+            },
+            {
+                question: "Who fell first? 😌",
+                options: ["You", "Me", "Both at same time", "Still loading..."],
+                answer: 1
+            },
+            {
+                question: "If we were animals, what would we be? 🐱",
+                options: ["Two cats", "Lion & lioness", "Tom & Jerry", "Cute pandas"],
+                answer: 2
+            },
+            {
+                question: "What makes me miss you the most? 💌",
+                options: ["Your voice", "Your messages", "Your hugs", "Everything"],
+                answer: 3
+            },
+            {
+                question: "What is my weakness? 😏",
+                options: ["Tea", "Sleep", "You", "Mobile phone"],
+                answer: 2
+            },
+            {
+                question: "How much do I love you? ❤️",
+                options: ["A little", "Medium", "Infinity ♾️", "Google can't calculate"],
+                answer: 3
+            },
+            {
+                question: "What is our vibe? ✨",
+                options: ["Chaotic", "Romantic", "Cute & Crazy", "Perfect"],
+                answer: 3
+            },
+            {
+                question: "When did I first Propose you?",
+                options: ["Dec 20", "Dec 22", "Dec 23", "I Don't remember 👑"],
+                answer: 1
+            },
+            {
+                question: "What is the gift that I bought on first meet?",
+                options: ["Teddy", "Chocolates", "Flowers", "I Don't remember 👑"],
+                answer: 2
+            },
+            {
+                question: "Our favorite thing to do?",
+                options: ["Travel", "Movies", "Talk all night", "Everything together"],
+                answer: 3
+            },
+            {
+                question: "What are you to me?",
+                options: ["Friend", "Bestie", "Wife 💖", "Lover"],
+                answer: 2
+            },
+            {
+                question: "Will you be my forever Valentine? 💘",
+                options: ["Yes", "Obviously yes", "Forever yes", "YESSSSSS ❤️"],
+                answer: 3
+            }
+        ];
+
+
+        let current = 0, score = 0, balloonsPopped = 0;
+        const qEl = document.getElementById("question");
+        const optEl = document.getElementById("options");
+        const msg = document.getElementById("message");
+        const heart = document.getElementById("heart");
+        const angry = document.getElementById("angry");
+        const card = document.getElementById("card");
+        const scoreEl = document.getElementById("score");
+
+        function loadQuestion() {
+            const q = quiz[current];
+            qEl.textContent = q.question;
+            optEl.innerHTML = ""; msg.textContent = "";
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement("button");
+                btn.className = "option";
+                btn.textContent = opt;
+                btn.onclick = () => selectAnswer(i, btn);
+                optEl.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(i, btn) {
+            const correct = quiz[current].answer;
+            document.querySelectorAll(".option").forEach(b => b.disabled = true);
+
+            if (i === correct) {
+                score++; btn.classList.add("selected");
+                heart.classList.add("show");
+                setTimeout(() => heart.classList.remove("show"), 800);
+                msg.textContent = "Correct! I love you 😘";
+                msg.style.color = "green";
+            } else {
+                btn.classList.add("wrong");
+                angry.classList.add("show");
+                document.body.classList.add("shake-screen");
+                setTimeout(() => {
+                    angry.classList.remove("show");
+                    document.body.classList.remove("shake-screen");
+                }, 1000);
+                msg.textContent = "Wrong 😤 but still mine!";
+                msg.style.color = "red";
+            }
+            scoreEl.textContent = `Love Quiz 💖 Score: ${score}/${quiz.length}`;
+            setTimeout(() => {
+                current++;
+                current < quiz.length ? loadQuestion() : showValentine();
+            }, 2500);
+        }
+
+        function showValentine() {
+            card.innerHTML = `
+<h2>Will you be my Valentine? 💘</h2>
+<div class="buttons">
+<button class="yes-btn" onclick="yesClicked()">Yes ❤️</button>
+<button class="no-btn" onclick="noClicked()">No</button>
+</div>
+<div class="popup" id="popup">
+❌ Invalid choice. You're already mine 😌
+</div>`;
+        }
+
+        function yesClicked() {
+            card.innerHTML = `
+<h2>Yayyyy!! 💖</h2>
+<div class="big-heart">❤️</div>
+<p>Thank you Darling 💃❤️💖</p>
+<p>You are officially my Valentine!</p>
+<p>Preparing your surprise...</p>
+<div class="loading-container">
+<div class="loading-bar" id="bar"></div>
+</div>`;
+            startLoading(); startHearts();
+        }
+
+        function startLoading() {
+            let p = 0;
+            const bar = document.getElementById("bar");
+            const i = setInterval(() => {
+                p += 2; bar.style.width = p + "%";
+                if (p >= 100) { clearInterval(i); showBalloons(); }
+            }, 40);
+        }
+
+        function showBalloons() {
+            balloonsPopped = 0;
+            card.innerHTML = `
+<h2>🎈 Pop the Balloons 🎈</h2>
+<div id="balloons"></div>
+<div id="imageGallery"></div>
+<div id="afterBalloons"></div>`;
+            const b = document.getElementById("balloons");
+            images.forEach(img => {
+                const span = document.createElement("span");
+                span.className = "balloon";
+                span.textContent = "🎈";
+                span.onclick = () => popBalloon(span, img);
+                b.appendChild(span);
+            });
+        }
+
+        function popBalloon(el, img) {
+            el.textContent = "💥"; el.onclick = null;
+            const image = document.createElement("img");
+            image.src = img;
+            image.className = "memoryImage";
+            document.getElementById("imageGallery").appendChild(image);
+            balloonsPopped++;
+            if (balloonsPopped === images.length) {
+                setTimeout(showLoveLetterButton, 1000);
+            }
+        }
+
+        function showLoveLetterButton() {
+            document.getElementById("afterBalloons").innerHTML = `
+        <div style="margin-top:30px;">
+            <h3>💌 I have something special for you...</h3>
+            <button onclick="openLoveLetter()" class="loveBtn">
+                Open My Love Letter 💕
+            </button>
+        </div>
+    `;
+        }
+
+        function openLoveLetter() {
+            document.getElementById("afterBalloons").innerHTML = `
+<div class="loveLetter">
+<h3>My Love 💖</h3>
+<p>
+    From the moment you walked into my life, everything changed.
+    Every laugh, every smile, every little moment with you
+    is my favorite memory. 💕
+</p>
+<p>
+    You are my happiness, my peace, my forever. ❤️
+</p>
+<p>
+I LOVE YOU SOFI 💖
+</p>
+<div class="big-heart" onclick="playVideo()">❤️</div>
+<p>Pop the heart for your surprise 🎥</p>
+<div id="videoContainer"></div>
+</div>`;
+        }
+
+        function playVideo() {
+            document.getElementById("videoContainer").innerHTML = `
+<video width="100%" autoplay controls>
+<source src="${videoPath}" type="video/mp4">
+</video>`;
+        }
+
+        function noClicked() {
+            document.getElementById("popup").classList.add("show");
+            setTimeout(() => document.getElementById("popup").classList.remove("show"), 2000);
+        }
+
+        function startHearts() {
+            setInterval(() => {
+                const h = document.createElement("div");
+                h.className = "floating-heart";
+                h.innerHTML = "💖";
+                h.style.left = Math.random() * 100 + "vw";
+                h.style.fontSize = (20 + Math.random() * 40) + "px";
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 6000);
+            }, 200);
+        }
+
+        loadQuestion();
+    </script>
+</body>
+
+</html>
