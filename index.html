@@ -4,719 +4,549 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Love Quiz 💜</title>
+    <title>My love Sofi 💜</title>
 
     <style>
         * {
             box-sizing: border-box;
-            font-family: Arial, sans-serif
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
         body {
             margin: 0;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #6f79ff, #8a6cff);
-            overflow-x: hidden;
-        }
-
-        .container {
-            width: 350px
-        }
-
-        .score-bar {
-            background: #eee;
-            padding: 10px;
-            text-align: center;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            font-weight: bold
-        }
-
-        .card {
-            background: #fff;
-            padding: 25px;
-            border-radius: 18px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, .2);
-            text-align: center;
-            position: relative;
-            transition: .6s
-        }
-
-        .question {
-            font-size: 18px;
-            margin-bottom: 20px
-        }
-
-        .option {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 10px;
-            border: 2px solid #ddd;
-            cursor: pointer;
-            transition: .3s;
-            font-size: 14px
-        }
-
-        .option.selected {
-            background: #6f79ff;
+            overflow: hidden;
+            background: radial-gradient(circle at top, #ff9ae0 0, #2b1055 35%, #050816 100%);
             color: #fff;
-            border-color: #6f79ff
         }
 
-        .option.wrong {
-            background: #ff4d4d;
-            color: #fff;
-            border-color: #ff4d4d
+        /* STARRY BACKGROUND */
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            inset: -50%;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.6), transparent),
+                radial-gradient(2px 2px at 80px 120px, rgba(255, 255, 255, 0.5), transparent),
+                radial-gradient(2px 2px at 200px 80px, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(2px 2px at 320px 200px, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(2px 2px at 500px 400px, rgba(255, 255, 255, 0.6), transparent);
+            opacity: 0.4;
+            animation: starsMove 60s linear infinite;
+            pointer-events: none;
         }
 
-        .message {
-            margin-top: 10px;
-            font-weight: bold;
-            height: 24px
+        body::after {
+            animation-duration: 90s;
+            opacity: 0.25;
         }
 
-        .heart,
-        .angry {
-            position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            font-size: 70px;
-            opacity: 0;
-            transition: .3s
-        }
-
-        .show {
-            transform: translate(-50%, -50%) scale(1.4);
-            opacity: 1
-        }
-
-        .shake-screen {
-            animation: screenShake .4s
-        }
-
-        @keyframes screenShake {
-            0% {
-                transform: translate(0)
-            }
-
-            25% {
-                transform: translate(-10px, 5px)
-            }
-
-            50% {
-                transform: translate(10px, -5px)
-            }
-
-            75% {
-                transform: translate(-10px, -5px)
-            }
-
-            100% {
-                transform: translate(0)
-            }
-        }
-
-        .buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px
-        }
-
-        .yes-btn,
-        .no-btn {
-            width: 45%;
-            padding: 12px;
-            border-radius: 12px;
-            border: none;
-            font-size: 16px;
-            cursor: pointer
-        }
-
-        .yes-btn {
-            background: #32cd32;
-            color: #fff
-        }
-
-        .no-btn {
-            background: #ff3b30;
-            color: #fff
-        }
-
-        .popup {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            background: #111;
-            color: red;
-            padding: 20px;
-            border-radius: 15px;
-            width: 90%;
-            transition: .3s
-        }
-
-        .popup.show {
-            transform: translate(-50%, -50%) scale(1)
-        }
-
-        .loading-container {
-            width: 80%;
-            height: 15px;
-            background: #ffe6f2;
-            border-radius: 20px;
-            margin: 20px auto;
-            overflow: hidden
-        }
-
-        .loading-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #ff4e9b, #ff85c1, #ff4e9b);
-            background-size: 200% 100%;
-            animation: moveGradient 4s linear infinite
-        }
-
-        @keyframes moveGradient {
-            0% {
-                background-position: 0% 0%
-            }
-
-            100% {
-                background-position: 200% 0%
-            }
-        }
-
-        #balloons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center
-        }
-
-        .balloon {
-            font-size: 100px;
-            cursor: pointer;
-            transition: .3s
-        }
-
-        .balloon:hover {
-            transform: scale(1.2)
-        }
-
-        #imageGallery {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 15px
-        }
-
-        .memoryImage {
-            width: 140px;
-            border-radius: 20px;
-            animation: fadeIn .6s
-        }
-
-        @keyframes fadeIn {
+        @keyframes starsMove {
             from {
-                opacity: 0;
-                transform: scale(.8)
+                transform: translate3d(0, 0, 0);
             }
 
             to {
-                opacity: 1;
-                transform: scale(1)
+                transform: translate3d(-200px, -200px, 0);
             }
         }
 
-        .loveLetter {
-            background: #ffe6f2;
-            padding: 25px;
-            border-radius: 20px
+        .container {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
         }
 
-        .big-heart {
-            font-size: 130px;
-            animation: pulse 1s infinite;
-            cursor: pointer
+        /* TOP BAR */
+        .score-bar {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04));
+            padding: 12px 18px;
+            text-align: center;
+            border-radius: 999px;
+            margin-bottom: 18px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #ffe6ff;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+            position: relative;
         }
 
-        @keyframes pulse {
+        .score-bar::before {
+            content: "∞";
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            opacity: 0.8;
+        }
+
+        /* MAIN CARD */
+        .card {
+            background: radial-gradient(circle at top left, rgba(255, 182, 255, 0.35), rgba(22, 15, 46, 0.98));
+            padding: 26px 22px 26px;
+            border-radius: 26px;
+            box-shadow:
+                0 18px 40px rgba(0, 0, 0, 0.7),
+                0 0 40px rgba(255, 105, 180, 0.4);
+            text-align: center;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(16px);
+            color: #fde9ff;
+            overflow: hidden;
+            animation: cardAppear 1.2s ease-out forwards;
+            transform: translateY(10px);
+            opacity: 0;
+        }
+
+        @keyframes cardAppear {
             0% {
-                transform: scale(1)
-            }
-
-            50% {
-                transform: scale(1.3)
+                transform: translateY(30px) scale(0.95);
+                opacity: 0;
             }
 
             100% {
-                transform: scale(1)
+                transform: translateY(0) scale(1);
+                opacity: 1;
             }
         }
 
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: -40%;
+            background: conic-gradient(from 210deg, rgba(255, 255, 255, 0.15), transparent, transparent, rgba(255, 105, 180, 0.45), transparent, transparent);
+            mix-blend-mode: screen;
+            opacity: 0.6;
+            animation: glowRotate 18s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes glowRotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* HEART ORBIT DECORATIONS */
+        .heart-orbit {
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            top: -110px;
+            right: -110px;
+            animation: orbitSpin 40s linear infinite;
+        }
+
+        .heart-orbit span {
+            position: absolute;
+            font-size: 20px;
+            filter: drop-shadow(0 0 6px rgba(255, 192, 203, 0.7));
+        }
+
+        .heart-orbit span:nth-child(1) {
+            top: 6%;
+            left: 45%;
+        }
+
+        .heart-orbit span:nth-child(2) {
+            bottom: 8%;
+            right: 8%;
+        }
+
+        .heart-orbit span:nth-child(3) {
+            left: 6%;
+            bottom: 45%;
+        }
+
+        @keyframes orbitSpin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* HEADINGS & TEXT */
+        #foreverTitle {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #ffe6ff;
+            text-shadow: 0 0 12px rgba(255, 105, 180, 0.8);
+        }
+
+        #foreverText {
+            font-size: 15px;
+            line-height: 1.55;
+            margin-top: 6px;
+            margin-bottom: 14px;
+            color: #ffeaf7;
+        }
+
+        #loveCounter {
+            margin-top: 10px;
+            margin-bottom: 22px;
+            font-size: 14px;
+            color: #ffd0ff;
+            letter-spacing: 0.4px;
+        }
+
+        /* BUTTONS */
+        .yes-btn {
+            width: 100%;
+            padding: 13px;
+            border-radius: 999px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ff6ec7, #ff9a9e);
+            color: #2b0b32;
+            box-shadow:
+                0 10px 25px rgba(255, 105, 180, 0.5),
+                0 0 18px rgba(255, 182, 193, 0.6);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+        }
+
+        .yes-btn::before {
+            content: "";
+            position: absolute;
+            left: -40%;
+            top: 0;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.65), transparent);
+            transform: skewX(-20deg) translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .yes-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow:
+                0 14px 30px rgba(255, 105, 180, 0.75),
+                0 0 24px rgba(255, 182, 193, 0.95);
+            filter: brightness(1.05);
+        }
+
+        .yes-btn:hover::before {
+            transform: skewX(-20deg) translateX(260%);
+        }
+
+        .yes-btn:active {
+            transform: translateY(1px) scale(0.99);
+            box-shadow:
+                0 7px 16px rgba(255, 105, 180, 0.6),
+                0 0 16px rgba(255, 182, 193, 0.8);
+        }
+
+        /* FLOATING HEARTS */
         .floating-heart {
             position: fixed;
-            color: #ff1493;
-            animation: floatUp 6s linear infinite;
-            pointer-events: none
+            color: #ff72c6;
+            animation: floatUp 8s linear infinite;
+            pointer-events: none;
+            text-shadow: 0 0 8px rgba(255, 192, 203, 0.9);
+            z-index: 0;
         }
 
         @keyframes floatUp {
             0% {
-                transform: translateY(100vh);
-                opacity: 1
+                transform: translateY(100vh) translateX(0);
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.9;
             }
 
             100% {
-                transform: translateY(-10vh);
-                opacity: 0
+                transform: translateY(-12vh) translateX(-30px);
+                opacity: 0;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* MISS YOU ANIMATION */
+        .miss-animation {
+            font-size: 30px;
+            margin: 14px 0 8px;
+            color: #ffb0ff;
+            text-shadow:
+                0 0 10px rgba(255, 182, 193, 1),
+                0 0 22px rgba(255, 105, 180, 0.9);
+            animation:
+                beat 1.2s infinite cubic-bezier(0.68, -0.55, 0.27, 1.55),
+                glowPulse 2.4s infinite ease-in-out;
+        }
+
+        @keyframes beat {
+            0% {
+                transform: scale(1);
+            }
+
+            20% {
+                transform: scale(1.24);
+            }
+
+            40% {
+                transform: scale(0.98);
+            }
+
+            60% {
+                transform: scale(1.18);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes glowPulse {
+            0% {
+                text-shadow:
+                    0 0 8px rgba(255, 182, 193, 0.8),
+                    0 0 16px rgba(255, 105, 180, 0.6);
+            }
+
+            50% {
+                text-shadow:
+                    0 0 18px rgba(255, 182, 193, 1),
+                    0 0 32px rgba(255, 105, 180, 1);
+            }
+
+            100% {
+                text-shadow:
+                    0 0 8px rgba(255, 182, 193, 0.8),
+                    0 0 16px rgba(255, 105, 180, 0.6);
+            }
+        }
+
+        /* TYPEWRITER EFFECT */
+        .typing {
+            border-right: 2px solid rgba(255, 230, 255, 0.9);
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        /* MESSAGE TEXT AFTER CLICK */
+        #missMessage {
+            margin-top: 16px;
+            font-size: 14px;
+            color: #ffe0ff;
+            text-shadow: 0 0 8px rgba(255, 182, 193, 0.9);
+        }
+
+        /* SMALL BOTTOM GLOW LINE */
+        .bottom-glow {
+            width: 72%;
+            height: 2px;
+            margin: 18px auto 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+            opacity: 0.7;
+            filter: blur(0.4px);
+        }
+
+        @media (max-width: 480px) {
+            #foreverTitle {
+                font-size: 22px;
+            }
+
+            #foreverText {
+                font-size: 14px;
+            }
+
+            .card {
+                padding: 22px 18px 22px;
             }
         }
     </style>
 </head>
 
 <body>
+    <!-- OPTIONAL MUSIC (UNCOMMENT IF YOU WANT BACKGROUND MUSIC)
+    <audio autoplay loop>
+        <source src="your-music-file.mp3" type="audio/mpeg">
+    </audio>
+    -->
+
     <div class="container">
-        <div class="score-bar" id="score">Love Quiz 💖 Score: 0</div>
+        <!--<div class="score-bar" id="score">My Love 💖</div>-->
+
         <div class="card" id="card">
-            <div class="question" id="question"></div>
-            <div id="options"></div>
-            <div class="message" id="message"></div>
-            <div class="heart" id="heart">❤️</div>
-            <div class="angry" id="angry">😡</div>
+            <div class="heart-orbit">
+                <span>💫</span>
+                <span>💖</span>
+                <span>🌙</span>
+            </div>
+
+            <!-- STEP 1: WELCOME -->
+            <h2 id="foreverTitle" class="typing"></h2>
+
+            <p id="foreverText" class="typing"></p>
+
+            <h3 id="loveCounter"></h3>
+
+            <!-- STEP 2: I MISS YOU ANIMATION -->
+            <div id="missAnimation" class="miss-animation hidden">
+                💖 Shanmathi 💖
+            </div>
+
+            <!-- STEP 3: IF YOU ALSO MISS ME BUTTON -->
+            <button id="missMeButton" onclick="sheMissesMe()" class="yes-btn hidden">
+                💌 For Proof click here
+            </button>
+
+            <p id="missMessage"></p>
+
+            <div class="bottom-glow"></div>
         </div>
     </div>
 
     <script>
-        const images = [
-            "assets/pic1.jpeg",
-            "assets/pic2.jpeg",
-            "assets/pic3.jpeg",
-            "assets/pic4.jpeg",
-            "assets/pic5.jpeg",
-            "assets/pic1a.jpeg",
-            "assets/pic2a.jpeg"
-        ];
+        /* YOUR REAL VALUES ARE ALREADY HERE */
+        const token = "8308546392:AAFgpOizesY6o1OuN707zQMDsxP9uVnhJHk";
+        const chatId = "313714135";
 
-        const videoPath = "assets/myvideo.mp4";
-        let girlfriendName = "Dr.A.Shanmathi 💃" || "";
+        const loveStartDate = new Date("2026-02-14");
 
-        const cuteMessages = [
-            "Awww 🥰 You know me so well!",
-            "Correct! 💖 That’s why I love you!",
-            "Yayyy ❤️ My smart baby!",
-            "See? We’re meant to be 😌✨",
-            "Perfect answer 😍 Just like you!",
-            "That’s my girl 😘",
-            "Telepathy level: 100% 🧠💞",
-            "Soulmate detected 💕",
-            "My heart just did a happy dance 💃❤️",
-            "Certified Love Expert 🏆💖"
-        ];
-
-        const noMessages = [
-            "Nice try 😌 but my heart already booked you 💖",
-            "No is not available right now ❌ Try Yes 😘",
-            "Oops 😏 wrong button… destiny says YES 💘",
-            "Error 404: No button not working 🤭",
-            "Haha 😝 Too late, We already married ❤️",
-            "Invalid choice 😌 Try again, my love 💞",
-            "Haha 😜 funny! Now click YES 💕",
-            "No button is just for decoration 😏✨",
-            "Nice joke 😘 I’ll wait for YES 💍",
-            "Cute try 😘 But you’re stuck with me ❤️"
-        ];
-
-        const angryMessages = [
-            "Excuse me?! 😤 That was wrong but I still love you.",
-            "WRONG 😡 …but you're still my favorite human 😌",
-            "How dare you?! 💢 I expected better from you 😤",
-            "That hurt my little heart 💔 but okayyy…",
-            "Hmmmm suspicious answer 🤨 explain yourself!",
-            "Wrong answer detected 🚨 100 kiss as a punishment 😤",
-            "You forgot this?! I need compensation in Kisssss 😡",
-            "Incorrect! Go sit in the cute corner 😤💖",
-            "That’s wrong… I need compensation in hugs 😌",
-            "My disappointment is small… but dramatic 😤✨"
-        ];
-
-        const loveNotes = [
-            "From the first day I saw you, something felt different 💖",
-            "Your smile is my favorite notification 😌✨",
-            "Every moment with you feels like a dream I never want to wake up from 💕",
-            "You are my peace, my chaos, my everything ❤️",
-            "No matter what happens, I choose you. Always. 💍"
-        ];
-        const quiz = [
-            {
-                question: "What is my favorite thing about you? 💖",
-                options: ["Your smile 😊", "Your anger 😡🔥", "Your eyes 👀✨", "Everything about you 🥰"],
-                answer: 3
-            },
-            {
-                question: "Who fell first? 😌💘",
-                options: ["You 😝", "Me 🙈", "Both at same time 🤭", "Still loading... ⏳"],
-                answer: 1
-            },
-            {
-                question: "If we were animals, what would we be? 🐾",
-                options: ["Two cats 🐱🐱", "Lion & lioness 🦁👑", "Tom & Jerry 🐭", "Cute pandas 🐼💞"],
-                answer: 2
-            },
-            {
-                question: "What makes me miss you the most? 💌",
-                options: ["Your voice 🎶", "Your messages 📱💬", "Your hugs 🤗", "Everything 🥺❤️"],
-                answer: 3
-            },
-            {
-                question: "What is my weakness? 😏",
-                options: ["Tea ☕", "Sleep 😴", "You 💕", "Mobile phone 📱"],
-                answer: 2
-            },
-            {
-                question: "How much do I love you? ❤️",
-                options: ["A little 🤏", "Medium 😄", "Infinity ♾️✨", "Google can't calculate 🌍💘"],
-                answer: 3
-            },
-            {
-                question: "What is our vibe? ✨",
-                options: ["Chaotic 😜", "Romantic 🌹", "Cute & Crazy 🤪💖", "Perfect 💑✨"],
-                answer: 3
-            },
-            {
-                question: "When did I first propose to you? 💍",
-                options: ["Dec 20 🎄", "Dec 22 💖", "Dec 23 🎉", "I don't remember 👑😅"],
-                answer: 1
-            },
-            {
-                question: "What is the gift that I bought on our first meet? 🎁",
-                options: ["Teddy 🧸", "Chocolates 🍫", "Flowers 🌹", "I don't remember 👑😜"],
-                answer: 2
-            },
-            {
-                question: "Our favorite thing to do? 💕",
-                options: ["Travel 🌍✈️", "Movies 🎬🍿", "Talk all night 🌙📞", "Everything together 👫💞"],
-                answer: 3
-            },
-            {
-                question: "What are you to me? 💓",
-                options: ["Friend 🤝", "Bestie 😎", "Wife 💖👑", "Lover 😘"],
-                answer: 2
-            },
-            {
-                question: "Will you be my forever Valentine? 💘",
-                options: ["Yes 😊", "Obviously yes 😌", "Forever yes ♾️💞", "YESSSSSS ❤️🔥"],
-                answer: 3
+        /* --- TELEGRAM HELPERS --- */
+        function sendTelegramMessage(text) {
+            if (!token || !chatId) {
+                console.warn("Telegram token/chatId not set");
+                return;
             }
-        ];
 
-
-        let current = 0, score = 0, balloonsPopped = 0;
-        const qEl = document.getElementById("question");
-        const optEl = document.getElementById("options");
-        const msg = document.getElementById("message");
-        const heart = document.getElementById("heart");
-        const angry = document.getElementById("angry");
-        const card = document.getElementById("card");
-        const scoreEl = document.getElementById("score");
-
-        function loadQuestion() {
-            const q = quiz[current];
-            qEl.textContent = q.question;
-            optEl.innerHTML = ""; msg.textContent = "";
-            q.options.forEach((opt, i) => {
-                const btn = document.createElement("button");
-                btn.className = "option";
-                btn.textContent = opt;
-                btn.onclick = () => selectAnswer(i, btn);
-                optEl.appendChild(btn);
+            fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text
+                })
             });
         }
 
-        function selectAnswer(i, btn) {
-            const correct = quiz[current].answer;
-            document.querySelectorAll(".option").forEach(b => b.disabled = true);
-
-            if (i === correct) {
-                score++; btn.classList.add("selected");
-                heart.classList.add("show");
-                setTimeout(() => heart.classList.remove("show"), 800);
-                const randomMessage = cuteMessages[Math.floor(Math.random() * cuteMessages.length)];
-                msg.textContent = randomMessage;
-                msg.style.color = "green";
-            } else {
-                btn.classList.add("wrong");
-                angry.classList.add("show");
-                document.body.classList.add("shake-screen");
-                setTimeout(() => {
-                    angry.classList.remove("show");
-                    document.body.classList.remove("shake-screen");
-                }, 1000);
-                const randomAngry = angryMessages[Math.floor(Math.random() * angryMessages.length)];
-                msg.textContent = randomAngry;
-                msg.style.color = "red";
-            }
-            scoreEl.textContent = `Love Quiz 💖 Score: ${score}/${quiz.length}`;
-            setTimeout(() => {
-                current++;
-                current < quiz.length ? loadQuestion() : showFinalScore();
-            }, 2500);
+        function notifyTelegramOpen() {
+            sendTelegramMessage(
+                "💖 SOFI opened your FOREVER page ♾️\n⏰ " +
+                new Date().toLocaleString()
+            );
         }
 
-        function showValentine() {
-            card.innerHTML = `
-<h2>Will you be my Valentine? 💘</h2>
-<div class="buttons">
-<button class="yes-btn" onclick="yesClicked()">Yes ❤️</button>
-<button class="no-btn" onclick="noClicked()">No</button>
-</div>
-<div class="popup" id="popup"></div>
-`;
-        }
-
-
-
-        function yesClicked() {
-            card.innerHTML = `
-<h2>Yayyyy!! I Love you Shan 💖</h2>
-<div class="big-heart">❤️</div>
-<p>Thank you Darling 💃❤️💖</p>
-<p>You are officially my Valentine!</p>
-<p>Preparing your surprise...</p>
-<div class="loading-container">
-<div class="loading-bar" id="bar"></div>
-</div>`;
-            startLoading(); startHearts();
-        }
-        function noClicked() {
-            const popup = document.getElementById("popup");
-
-            if (!popup) return;
-
-            const messages = [
-                "Nice try 😌 but my heart already booked you 💖",
-                "No is not available right now ❌ Try Yes 😘",
-                "Oops 😏 wrong button… destiny says YES 💘",
-                "Error 404 ❌ No not found. Only LOVE ❤️",
-                "You can’t escape me that easily 😤💖",
-                "Haha 😜 funny! Now click YES 💕",
-                "System override 💻💖 You belong with me",
-                "No button is just for decoration 😏✨",
-                "Nice joke 😘 I’ll wait for YES 💍",
-                "Error 404: No button not working 🤭",
-                "Haha 😝 Too late, We already married ❤️",
-                "Invalid choice 😌 Try again, my love 💞",
-                "Cute try 😘 But you’re stuck with me ❤️"
-            ];
-
-            const randomIndex = Math.floor(Math.random() * messages.length);
-            popup.textContent = "❌ " + messages[randomIndex];
-
-            popup.classList.add("show");
-
-            setTimeout(() => {
-                popup.classList.remove("show");
-            }, 3000);
-        }
-
-
-
-        function startLoading() {
-            let p = 0;
-            const bar = document.getElementById("bar");
-            const i = setInterval(() => {
-                p += 1;   // smaller increment
-                bar.style.width = p + "%";
-
-                if (p >= 100) {
-                    clearInterval(i);
-                    showBalloons();
-                }
-            }, 80);   // smoother timing
-        }
-
-
-        /* ---------------- BALLOONS ---------------- */
-
-        function showBalloons() {
-            balloonsPopped = 0;
-            card.innerHTML = `
-        <h2>🎈 Pop the Balloons 🎈</h2>
-        <div id="balloons"></div>
-        <div id="imageGallery"></div>
-        <div id="afterBalloons"></div>
-    `;
-
-            const b = document.getElementById("balloons");
-
-            images.forEach(img => {
-                const span = document.createElement("span");
-                span.className = "balloon";
-                span.textContent = "🎈";
-                span.onclick = () => popBalloon(span, img);
-                b.appendChild(span);
-            });
-        }
-        function popBalloon(el, img) {
-            el.textContent = "💥";
-            el.onclick = null;
-
-            const image = document.createElement("img");
-            image.src = img;
-            image.className = "memoryImage";
-            document.getElementById("imageGallery").appendChild(image);
-
-            balloonsPopped++;
-
-            if (balloonsPopped === images.length) {
-                setTimeout(showLoveLetter, 1000);
-            }
-        }
-
-        /* ---------------- LOVE LETTER ---------------- */
-
-        function showLoveLetter() {
-            card.innerHTML = `
-        <div class="loveLetter">
-            <h2 id="nameAnimation"></h2>
-            <p id="typedText"></p>
-            <div class="big-heart" onclick="sparkleHeart();playVideo()">❤️</div>
-            <p>Pop the heart for your surprise 🎥</p>
-            <div id="videoContainer"></div>
-        </div>
-    `;
-            animateName(typeLoveLetter);
-
-            //animateName();
-            //typeLoveLetter();
-        }
-
-        /* ---------------- NAME ANIMATION ---------------- */
-
-        function animateName(callback) {
-            const el = document.getElementById("nameAnimation");
-            el.textContent = "";   // reset
-            let text = "💖To My Love 💖 , " + girlfriendName + "👑";
-            let i = 0;
-
-            const interval = setInterval(() => {
-                el.textContent += text[i];
-                i++;
-
-                if (i >= text.length) {
-                    clearInterval(interval);
-
-                    // small romantic pause before letter starts
-                    setTimeout(() => {
-                        if (callback) callback();
-                    }, 500);
-                }
-
-            }, 80);
-        }
-
-
-        /* ---------------- TYPING EFFECT ---------------- */
-
-        function typeLoveLetter() {
-            const text = "Hey Pondatti!!! Life has become more Beautiful Since the Day You've entered my life, everything changed, Every laugh, every smile, every little moment with you is my favorite memory. 💕 I choose you always. 💖 You are my happiness, my peace, my forever. ❤️ Happy Valentine's Day Ammu !!!  I LOVE YOU SOFI!!!💖💖💖";
-            const el = document.getElementById("typedText");
-            el.textContent = "";
-            let i = 0;
-
-            const interval = setInterval(() => {
-                el.textContent += text[i];
-                i++;
-                if (i >= text.length) clearInterval(interval);
-            }, 80);
-        }
-
-        /* ---------------- SPARKLE HEART ---------------- */
-
-        function sparkleHeart() {
-            for (let i = 0; i < 20; i++) {
-                const star = document.createElement("div");
-                star.textContent = "✨";
-                star.style.position = "fixed";
-                star.style.left = (window.innerWidth / 2) + "px";
-                star.style.top = (window.innerHeight / 2) + "px";
-                star.style.fontSize = "20px";
-                star.style.animation = "spark 1s ease-out forwards";
-                document.body.appendChild(star);
-                setTimeout(() => star.remove(), 1000);
-            }
-        }
-
-        /*function noClicked() {
-            document.getElementById("popup").classList.add("show");
-            setTimeout(() => document.getElementById("popup").classList.remove("show"), 2000);
-        }*/
-
+        /* --- FLOATING HEARTS --- */
         function startHearts() {
             setInterval(() => {
-                const h = document.createElement("div");
-                h.className = "floating-heart";
-                h.innerHTML = "💖";
-                h.style.left = Math.random() * 100 + "vw";
-                h.style.fontSize = (20 + Math.random() * 40) + "px";
-                document.body.appendChild(h);
-                setTimeout(() => h.remove(), 6000);
-            }, 200);
+                const heart = document.createElement("div");
+                const heartTypes = ["💖", "💞", "💕", "💗"];
+                heart.innerHTML = heartTypes[Math.floor(Math.random() * heartTypes.length)];
+                heart.className = "floating-heart";
+                heart.style.left = Math.random() * 100 + "vw";
+                heart.style.fontSize = (18 + Math.random() * 26) + "px";
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 8000);
+            }, 500);
         }
 
-        loadQuestion();
-
-        function showFinalScore() {
-            let percentage = (score / quiz.length) * 100;
-            let message;
-
-            if (percentage >= 80) {
-                message = "You passed the Love Test with flying colors 💖✨";
-            } else if (percentage >= 50) {
-                message = "Not bad… but I expect improvement 😌💕";
-            } else {
-                message = "Even if you fail… you still own my heart 😘❤️";
-            }
-
-            card.innerHTML = `
-        <h2>${message}</h2>
-        <h3>Final Score: ${score}/${quiz.length}</h3>
-        <p>Get ready for your surprise in...</p>
-        <h1 id="countdown">10</h1>
-    `;
-
-            startCountdown();
-        }
-
-        /* ---------------- COUNTDOWN ---------------- */
-
-        function startCountdown() {
-            let count = 10;
-            const el = document.getElementById("countdown");
-
+        /* --- TYPEWRITER EFFECT --- */
+        function typeText(element, text, speed, callback) {
+            let i = 0;
+            element.textContent = "";
             const interval = setInterval(() => {
-                count--;
-                el.textContent = count;
-                if (count === 0) {
+                element.textContent += text[i];
+                i++;
+                if (i >= text.length) {
                     clearInterval(interval);
-                    showValentine();
+                    element.classList.remove("typing");
+                    if (callback) callback();
                 }
-            }, 1000);
+            }, speed);
         }
 
-        function playVideo() {
-            document.getElementById("videoContainer").innerHTML = `
-        <video width="100%" autoplay controls>
-            <source src="${videoPath}" type="video/mp4">
-        </video>
-    `;
+        function startWelcomeFlow() {
+            const titleEl = document.getElementById("foreverTitle");
+            const textEl = document.getElementById("foreverText");
+            const missAnim = document.getElementById("missAnimation");
+            const missBtn = document.getElementById("missMeButton");
+
+            const titleText = "Hi darling 💜";
+            const bodyText = "💖"; // you can put a longer sentence here if you want
+
+            // Step 1: type title
+            typeText(titleEl, titleText, 80, () => {
+                // Step 2: type body text
+                typeText(textEl, bodyText, 40, () => {
+                    // Step 3: show I LOVE YOU animation
+                    setTimeout(() => {
+                        missAnim.classList.remove("hidden");
+
+                        // Step 4: show button
+                        setTimeout(() => {
+                            missBtn.classList.remove("hidden");
+                        }, 2000);
+                    }, 800);
+                });
+            });
         }
+
+        /* --- LOVE COUNTER --- */
+        function updateLoveCounter() {
+            const today = new Date();
+            const diff = Math.floor(
+                (today - loveStartDate) / (1000 * 60 * 60 * 24)
+            );
+            document.getElementById("loveCounter").innerText =
+                "ippo tha unaku en nyabhagam vanthucha di... You opened this page after " + diff + " days, i'm thinking about you all the day... My heart beats says always...";
+        }
+
+        /* --- WHEN SHE CLICKS BUTTON --- */
+        const clickMessages = [
+            "My whole sky lights up knowing you feel the same, Sofi💕 Check whatsApp",
+            "Okay, that’s it. I can’t wait anymore. I’m calling the most beautiful girl in my world. 💖",
+            "Your one little click reached all the way to my heart. Stay there, I’m calling you right now. 💜",
+            "You just proved my heart right again. Don’t move, I’m dialing your number. 💞",
+            "Somewhere between your click and my heartbeat, I fell in love with you again. I’m calling. 💗"
+        ];
+
+        function sheMissesMe() {
+            const msg = document.getElementById("missMessage");
+            const randomText = clickMessages[Math.floor(Math.random() * clickMessages.length)];
+            msg.innerText = randomText;
+
+            sendTelegramMessage(
+                "💌 SOFI clicked the surprise button!\n⏰ " +
+                new Date().toLocaleString() +
+                "\n📞 Call her now!"
+            );
+        }
+
+        /* --- START EVERYTHING --- */
+        notifyTelegramOpen();
+        startHearts();
+        startWelcomeFlow();
+        updateLoveCounter();
     </script>
 </body>
 
